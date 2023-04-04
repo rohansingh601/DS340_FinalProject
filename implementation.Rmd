@@ -1,0 +1,74 @@
+---
+title: "implementation"
+author: "Daniel DeCollo"
+date: "2023-03-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(data.table)
+library(dplyr)
+library(xgboost)
+```
+
+## Get data
+```{r}
+season_2018 <- fread('./season_2018.csv')
+season_2019 <- fread('./season_2019.csv')
+season_2020 <- fread('./season_2020.csv')
+season_2021 <- fread('./season_2021.csv')
+```
+
+## Preprocessing - superbowl winners
+```{r}
+#2018
+season_2018$super_bowl_winner <- 0
+season_2018$super_bowl_winner[season_2018$Teams == "Eagles"] <- 1
+
+#2019
+season_2019$super_bowl_winner <- 0
+season_2019$super_bowl_winner[season_2019$Teams == "Patriots"] <- 1
+
+#2020
+season_2020$super_bowl_winner <- 0
+season_2020$super_bowl_winner[season_2020$Teams == "Chiefs"] <- 1
+
+#2021
+season_2021$super_bowl_winner <- 0
+season_2021$super_bowl_winner[season_2021$Teams == "Buccaneers"] <- 1
+```
+
+## training/ testing data
+```{r}
+#join 2018-2020 for training data
+training <- rbind(season_2018, season_2019, season_2020)
+
+#testing data
+testing <- season_2021
+```
+
+## train model
+```{r}
+mylogit <- glm(super_bowl_winner ~ Wins + Loses + Ties + win_percent + total_points + total_rushing_yards
+               + total_passing_yards + total_yards, data = training)
+```
+
+## test model
+```{r}
+testing$prediction <- predict(mylogit, newdata = testing)
+```
+
+```{r}
+ggplot(testing, aes(x = reorder(Teams, prediction), y = prediction)) +
+  geom_point(aes(colour = Teams)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  theme(legend.position = "none") + 
+  xlab("NFL Teams") + 
+  ylab("Predicted Winner") + 
+  ggtitle("2021 Super Bowl Winner Prediction")
+```
