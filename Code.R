@@ -23,13 +23,16 @@ data$loser[data$loser == 1] <- NA
 #Seperating data into each respective season
 nfl_list <- list()
 
-for (year in 2012:2021) {
+for (year in 2009:2021) {
   start_date <- as.Date(paste(year, "-08-01", sep = ""))
   end_date <- as.Date(paste(year + 1, "-02-14", sep = ""))
   nfl_list[[year]] <- data[data$date %between% c(start_date, end_date)]
 }
 
 # extracting each season from  nfl_list
+nfl_2009 <- nfl_list[[2009]]
+nfl_2010 <- nfl_list[[2010]]
+nfl_2011 <- nfl_list[[2011]]
 nfl_2012 <- nfl_list[[2012]]
 nfl_2013 <- nfl_list[[2013]]
 nfl_2014 <- nfl_list[[2014]]
@@ -40,6 +43,243 @@ nfl_2018 <- nfl_list[[2018]]
 nfl_2019 <- nfl_list[[2019]]
 nfl_2020 <- nfl_list[[2020]]
 nfl_2021 <- nfl_list[[2021]]
+
+
+#######################2009##########################
+#Adding total wins and loses for each team
+wins <- as.data.table(table(nfl_2009$winner))
+loses <- as.data.table(table(nfl_2009$loser))
+
+season_2009 <- cbind(wins, loses$N)
+colnames(season_2009) <- c('Teams', 'Wins', 'Loses')
+
+#adding in any ties during the season
+season_2009$Ties <- 0
+x <- na.omit(nfl_2009$away[nfl_2009$tied == 1])
+y <- na.omit(nfl_2009$home[nfl_2009$tied == 1])
+tied_teams <- c(x,y)
+
+season_2009$Ties[season_2009$Teams == tied_teams] <- 1
+
+# Win percentages
+season_2009$win_percent <- season_2009$Wins/(season_2009$Wins+season_2009$Loses+season_2009$Ties)
+
+#Adding total points column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2009$Teams){
+  arr1 <- append(arr1, sum(nfl_2009$score_away[which(nfl_2009$away == n)]))
+}
+
+for (n in season_2009$Teams){
+  arr2 <- append(arr2, sum(nfl_2009$score_home[which(nfl_2009$home == n)]))
+}
+
+season_2009$total_points <- mapply("+", arr1, arr2)
+
+#Adding total rushing yards column
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2009$Teams){
+  arr1 <- append(arr1, sum(nfl_2009$rushing_yards_away[which(nfl_2009$away == n)]))
+}
+
+for (n in season_2009$Teams){
+  arr2 <- append(arr2, sum(nfl_2009$rushing_yards_home[which(nfl_2009$home == n)]))
+}
+
+season_2009$total_rushing_yards <- mapply("+", arr1, arr2)
+
+#Adding total passing yards column
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2009$Teams){
+  arr1 <- append(arr1, sum(nfl_2009$passing_yards_away[which(nfl_2009$away == n)]))
+}
+
+for (n in season_2009$Teams){
+  arr2 <- append(arr2, sum(nfl_2009$passing_yards_home[which(nfl_2009$home == n)]))
+}
+
+season_2009$total_passing_yards <- mapply("+", arr1, arr2)
+
+#Adding total yards column
+season_2009$total_yards <- season_2009$total_rushing_yards + season_2009$total_passing_yards
+
+#Adding total turnovers column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2009$Teams){
+  arr1 <- append(arr1, sum(nfl_2009$turnovers_away[which(nfl_2009$away == n)]))
+}
+
+for (n in season_2009$Teams){
+  arr2 <- append(arr2, sum(nfl_2009$turnovers_home[which(nfl_2009$home == n)]))
+}
+
+season_2009$total_turnovers <- mapply("+", arr1, arr2)
+
+
+#######################2010##########################
+#Adding total wins and loses for each team
+wins <- as.data.table(table(nfl_2010$winner))
+loses <- as.data.table(table(nfl_2010$loser))
+
+season_2010 <- cbind(wins, loses$N)
+colnames(season_2010) <- c('Teams', 'Wins', 'Loses')
+
+#adding in any ties during the season
+season_2010$Ties <- 0
+x <- na.omit(nfl_2010$away[nfl_2010$tied == 1])
+y <- na.omit(nfl_2010$home[nfl_2010$tied == 1])
+tied_teams <- c(x,y)
+
+season_2010$Ties[season_2010$Teams == tied_teams] <- 1
+
+# Win percentages
+season_2010$win_percent <- season_2010$Wins/(season_2010$Wins+season_2010$Loses+season_2010$Ties)
+
+#Adding total points column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2010$Teams){
+  arr1 <- append(arr1, sum(nfl_2010$score_away[which(nfl_2010$away == n)]))
+}
+
+for (n in season_2010$Teams){
+  arr2 <- append(arr2, sum(nfl_2010$score_home[which(nfl_2010$home == n)]))
+}
+
+season_2010$total_points <- mapply("+", arr1, arr2)
+
+#Adding total rushing yards column
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2010$Teams){
+  arr1 <- append(arr1, sum(nfl_2010$rushing_yards_away[which(nfl_2010$away == n)]))
+}
+
+for (n in season_2010$Teams){
+  arr2 <- append(arr2, sum(nfl_2010$rushing_yards_home[which(nfl_2010$home == n)]))
+}
+
+season_2010$total_rushing_yards <- mapply("+", arr1, arr2)
+
+#Adding total passing yards column
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2010$Teams){
+  arr1 <- append(arr1, sum(nfl_2010$passing_yards_away[which(nfl_2010$away == n)]))
+}
+
+for (n in season_2010$Teams){
+  arr2 <- append(arr2, sum(nfl_2010$passing_yards_home[which(nfl_2010$home == n)]))
+}
+
+season_2010$total_passing_yards <- mapply("+", arr1, arr2)
+
+#Adding total yards column
+season_2010$total_yards <- season_2010$total_rushing_yards + season_2010$total_passing_yards
+
+#Adding total turnovers column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2010$Teams){
+  arr1 <- append(arr1, sum(nfl_2010$turnovers_away[which(nfl_2010$away == n)]))
+}
+
+for (n in season_2010$Teams){
+  arr2 <- append(arr2, sum(nfl_2010$turnovers_home[which(nfl_2010$home == n)]))
+}
+
+season_2010$total_turnovers <- mapply("+", arr1, arr2)
+
+
+#######################2011##########################
+#Adding total wins and loses for each team
+wins <- as.data.table(table(nfl_2011$winner))
+loses <- as.data.table(table(nfl_2011$loser))
+
+season_2011 <- cbind(wins, loses$N)
+colnames(season_2011) <- c('Teams', 'Wins', 'Loses')
+
+#adding in any ties during the season
+season_2011$Ties <- 0
+x <- na.omit(nfl_2011$away[nfl_2011$tied == 1])
+y <- na.omit(nfl_2011$home[nfl_2011$tied == 1])
+tied_teams <- c(x,y)
+
+season_2011$Ties[season_2011$Teams == tied_teams] <- 1
+
+# Win percentages
+season_2011$win_percent <- season_2011$Wins/(season_2011$Wins+season_2011$Loses+season_2011$Ties)
+
+#Adding total points column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2011$Teams){
+  arr1 <- append(arr1, sum(nfl_2011$score_away[which(nfl_2011$away == n)]))
+}
+
+for (n in season_2011$Teams){
+  arr2 <- append(arr2, sum(nfl_2011$score_home[which(nfl_2011$home == n)]))
+}
+
+season_2011$total_points <- mapply("+", arr1, arr2)
+
+#Adding total rushing yards column
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2011$Teams){
+  arr1 <- append(arr1, sum(nfl_2011$rushing_yards_away[which(nfl_2011$away == n)]))
+}
+
+for (n in season_2011$Teams){
+  arr2 <- append(arr2, sum(nfl_2011$rushing_yards_home[which(nfl_2011$home == n)]))
+}
+
+season_2011$total_rushing_yards <- mapply("+", arr1, arr2)
+
+#Adding total passing yards column
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2011$Teams){
+  arr1 <- append(arr1, sum(nfl_2011$passing_yards_away[which(nfl_2011$away == n)]))
+}
+
+for (n in season_2011$Teams){
+  arr2 <- append(arr2, sum(nfl_2011$passing_yards_home[which(nfl_2011$home == n)]))
+}
+
+season_2011$total_passing_yards <- mapply("+", arr1, arr2)
+
+#Adding total yards column
+season_2011$total_yards <- season_2011$total_rushing_yards + season_2011$total_passing_yards
+
+#Adding total turnovers column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2011$Teams){
+  arr1 <- append(arr1, sum(nfl_2011$turnovers_away[which(nfl_2011$away == n)]))
+}
+
+for (n in season_2011$Teams){
+  arr2 <- append(arr2, sum(nfl_2011$turnovers_home[which(nfl_2011$home == n)]))
+}
+
+season_2011$total_turnovers <- mapply("+", arr1, arr2)
 
 #######################2012##########################
 #Adding total wins and loses for each team
@@ -823,6 +1063,9 @@ for (n in season_2021$Teams){
 season_2021$total_turnovers <- mapply("+", arr1, arr2)
 
 #####################################
+fwrite(season_2009, "season_2009.csv")
+fwrite(season_2010, "season_2010.csv")
+fwrite(season_2011, "season_2011.csv")
 fwrite(season_2012, "season_2012.csv")
 fwrite(season_2013, "season_2013.csv")
 fwrite(season_2014, "season_2014.csv")
