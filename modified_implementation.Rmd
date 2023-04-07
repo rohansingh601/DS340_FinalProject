@@ -41,6 +41,7 @@ season_2021 <- fread('./season_2021.csv')
 ```
 
 ## Preprocessing - superbowl winners
+0 indicates that the team did not win the SuperBowl. For teams that win, the 0 is changed to a 1.
 ```{r}
 #2009
 season_2009$super_bowl_winner <- 0
@@ -96,6 +97,9 @@ season_2021$super_bowl_winner[season_2021$Teams == "Buccaneers"] <- 1
 ```
 
 ## training/ testing data
+Training: 2009 - 2014
+Testing: 2015 - 2020
+Validation: 2021
 ```{r}
 #merge training data
 training <- rbind(season_2009, season_2010, season_2011, 
@@ -109,11 +113,13 @@ testing <- rbind(season_2015, season_2016, season_2017,
 validation <- season_2021
 ```
 
+First few rows of testing data
 ```{r}
-training[1]
+head(testing)
 ```
 
 ## drop unused columns
+Remove the team name.
 ```{r}
 training <- training[,-'Teams']
 
@@ -121,16 +127,20 @@ testing <- testing[,-'Teams']
 ```
 
 ## training size
+Display the data imbalance for the Superbowl winners. Only one team can win per season so there has to be an imbalance to start.
 ```{r}
 #number of rows that indicate winning teams
 table(training$super_bowl_winner == 1)
 ```
+
 ## Percentage of minority observation
+Only about 3% of the training data represents a SuperBowl winning team.
 ```{r}
 sum(training$super_bowl_winner)/nrow(training)*100
 ```
 
 ## Oversampling for data imbalance
+The original training dataset was 192 row. With ROSE, we are able to add synthetic data to expand it. Our ROSE training dataset is 1000 rows. ROSE also allows us to address the data imbalance. Everytime a row is added to the data, there is a 50% chance that the row will represent a SuperBowl winning team.
 ```{r}
 #desired length of training
 n_train <- 1000
@@ -142,11 +152,15 @@ rose_training <- ROSE(as.factor(super_bowl_winner) ~ ., data  = training, N = n_
 ```
 
 ## New training table
+Almost 50% of our ROSE training data represents a SuperBowl winning teams.
 ```{r}
 table(rose_training$super_bowl_winner == 1)
 ```
 
 ## train model
+We trained two models. The first model was trained using our original training data. It has 192 rows and 3.125% of the data represents a SuperBowl winning team.
+
+The second model was trained with our ROSE training data. It has 1000 rows and 49.4% of the data represents a SuperBowl winning team.
 ```{r}
 original_model <- glm(super_bowl_winner ~ Wins + Loses + Ties + win_percent + total_points +
                         total_rushing_yards + total_passing_yards + total_yards, 
@@ -169,7 +183,7 @@ summary(rose_model)
 ```
 
 ## test model
-Adds the probability for the team to win
+Adds the probability for the team to win according to the two models.
 ```{r}
 testing$prediction <- predict(original_model, newdata = testing, type = "response")
 
@@ -177,6 +191,7 @@ testing$prediction <- predict(original_model, newdata = testing, type = "respons
 testing$rose_prediction <- predict(rose_model, newdata = testing, type = "response")
 ```
 
+This is the probability generated from the first model. Blue dots represent the actual winners. Most of the points are under 25%, including all of the winners.
 ```{r}
 #plot for original model
 ggplot(testing, aes(x = reorder(prediction, prediction), y = prediction)) +
@@ -186,6 +201,7 @@ ggplot(testing, aes(x = reorder(prediction, prediction), y = prediction)) +
   xlab("probability") 
 ```
 
+This is the probability generated from the ROSE model. Blue dots represent the actual winners. The points distributed a little more and 5 out of 6 of the winners are above 50%. 3 out of 6 of the winners are above 75%.
 ```{r}
 #plot for original model
 ggplot(testing, aes(x = reorder(rose_prediction, rose_prediction), y = rose_prediction)) +
@@ -196,10 +212,12 @@ ggplot(testing, aes(x = reorder(rose_prediction, rose_prediction), y = rose_pred
 ```
 
 ## AUC
+AUC for the first model is close to flipping a coin at 65%.
 ```{r}
 auc(testing$super_bowl_winner, testing$prediction)
 ```
 
+The AUC for the ROSE model is a lot higher, which indicates better performance.
 ```{r}
 auc(testing$super_bowl_winner, testing$rose_prediction)
 ```
