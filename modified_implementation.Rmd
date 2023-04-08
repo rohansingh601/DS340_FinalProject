@@ -1,5 +1,5 @@
 ---
-title: "implementation"
+title: "modified implementation"
 author: "Daniel DeCollo"
 date: "2023-04-01"
 output: html_document
@@ -10,15 +10,30 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 ```{r}
+#Clean Environment
+rm(list = ls())
+
+#Import Libraries
 library(ggplot2)
 library(data.table)
 library(dplyr)
 library(xgboost)
 library(ROSE)
+library(pROC)
+library(caret)
 ```
 
 ## Get data
 ```{r}
+season_2009 <- fread('./season_2009.csv')
+season_2010 <- fread('./season_2010.csv')
+season_2011 <- fread('./season_2011.csv')
+season_2012 <- fread('./season_2012.csv')
+season_2013 <- fread('./season_2013.csv')
+season_2014 <- fread('./season_2014.csv')
+season_2015 <- fread('./season_2015.csv')
+season_2016 <- fread('./season_2016.csv')
+season_2017 <- fread('./season_2017.csv')
 season_2018 <- fread('./season_2018.csv')
 season_2019 <- fread('./season_2019.csv')
 season_2020 <- fread('./season_2020.csv')
@@ -26,7 +41,44 @@ season_2021 <- fread('./season_2021.csv')
 ```
 
 ## Preprocessing - superbowl winners
+0 indicates that the team did not win the SuperBowl. For teams that win, the 0 is changed to a 1.
 ```{r}
+#2009
+season_2009$super_bowl_winner <- 0
+season_2009$super_bowl_winner[season_2009$Teams == "Steelers"] <- 1
+
+#2010
+season_2010$super_bowl_winner <- 0
+season_2010$super_bowl_winner[season_2010$Teams == "Saints"] <- 1
+
+#2011
+season_2011$super_bowl_winner <- 0
+season_2011$super_bowl_winner[season_2011$Teams == "Packers"] <- 1
+
+#2012
+season_2012$super_bowl_winner <- 0
+season_2012$super_bowl_winner[season_2012$Teams == "Giants"] <- 1
+
+#2013
+season_2013$super_bowl_winner <- 0
+season_2013$super_bowl_winner[season_2013$Teams == "Ravens"] <- 1
+
+#2014
+season_2014$super_bowl_winner <- 0
+season_2014$super_bowl_winner[season_2014$Teams == "Seahawks"] <- 1
+
+#2015
+season_2015$super_bowl_winner <- 0
+season_2015$super_bowl_winner[season_2015$Teams == "Patriots"] <- 1
+
+#2016
+season_2016$super_bowl_winner <- 0
+season_2016$super_bowl_winner[season_2016$Teams == "Broncos"] <- 1
+
+#2017
+season_2017$super_bowl_winner <- 0
+season_2017$super_bowl_winner[season_2017$Teams == "Patriots"] <- 1
+
 #2018
 season_2018$super_bowl_winner <- 0
 season_2018$super_bowl_winner[season_2018$Teams == "Eagles"] <- 1
@@ -45,62 +97,156 @@ season_2021$super_bowl_winner[season_2021$Teams == "Buccaneers"] <- 1
 ```
 
 ## training/ testing data
+Training: 2009 - 2014
+Testing: 2015 - 2020
+Validation: 2021
 ```{r}
-#join 2018-2020 for training data
-training <- rbind(season_2018, season_2019, season_2020)
+#merge training data
+training <- rbind(season_2009, season_2010, season_2011, 
+                 season_2012, season_2013, season_2014)
 
-#testing data
-testing <- season_2021
+#join 2018-2020 for testing data
+testing <- rbind(season_2015, season_2016, season_2017,
+                 season_2018, season_2019, season_2020)
+
+#Validation data
+validation <- season_2021
 ```
 
+First few rows of testing data
 ```{r}
-training[1]
+head(testing)
 ```
 
 ## drop unused columns
+Remove the team name.
 ```{r}
 training <- training[,-'Teams']
+
+testing <- testing[,-'Teams']
 ```
 
 ## training size
+Display the data imbalance for the Superbowl winners. Only one team can win per season so there has to be an imbalance to start.
 ```{r}
 #number of rows that indicate winning teams
 table(training$super_bowl_winner == 1)
 ```
+
 ## Percentage of minority observation
+Only about 3% of the training data represents a SuperBowl winning team.
 ```{r}
 sum(training$super_bowl_winner)/nrow(training)*100
 ```
 
 ## Oversampling for data imbalance
+The original training dataset was 192 row. With ROSE, we are able to add synthetic data to expand it. Our ROSE training dataset is 1000 rows. ROSE also allows us to address the data imbalance. Everytime a row is added to the data, there is a 50% chance that the row will represent a SuperBowl winning team.
 ```{r}
 #desired length of training
 n_train <- 1000
 
 #probability of minority class being generated
-p_minority <- 0.2
+p_minority <- 0.5 #not bad performance for .25
 
-new_training <- ROSE(as.factor(super_bowl_winner) ~ ., data  = training, N = n_train, p = p_minority, seed = 412)$data
+rose_training <- ROSE(as.factor(super_bowl_winner) ~ ., data  = training, N = n_train, p = p_minority, seed = 412)$data
 ```
 
 ## New training table
+Almost 50% of our ROSE training data represents a SuperBowl winning teams.
 ```{r}
-table(new_training$super_bowl_winner == 1)
+table(rose_training$super_bowl_winner == 1)
 ```
 
 ## train model
+We trained two models. The first model was trained using our original training data. It has 192 rows and 3.125% of the data represents a SuperBowl winning team.
+
+The second model was trained with our ROSE training data. It has 1000 rows and 49.4% of the data represents a SuperBowl winning team.
 ```{r}
-mylogit <- glm(super_bowl_winner ~ Wins + Loses + Ties + win_percent + total_points + total_rushing_yards
-               + total_passing_yards + total_yards, data = training)
+original_model <- glm(super_bowl_winner ~ Wins + Loses + Ties + win_percent + total_points +
+                        total_rushing_yards + total_passing_yards + total_yards, 
+                      data = training, family = binomial())
+
+#Model with ROSE Training data
+rose_model <- glm(super_bowl_winner ~ Wins + Loses + Ties + win_percent + total_points +
+                    total_rushing_yards + total_passing_yards + total_yards, 
+                  data = rose_training, family = binomial())
+```
+
+
+## Model Summary
+```{r}
+summary(original_model)
+```
+
+```{r}
+summary(rose_model)
 ```
 
 ## test model
+Adds the probability for the team to win according to the two models.
 ```{r}
-testing$prediction <- predict(mylogit, newdata = testing)
+testing$prediction <- predict(original_model, newdata = testing, type = "response")
+
+#test ROSE model
+testing$rose_prediction <- predict(rose_model, newdata = testing, type = "response")
+```
+
+This is the probability generated from the first model. Blue dots represent the actual winners. Most of the points are under 25%, including all of the winners.
+```{r}
+#plot for original model
+ggplot(testing, aes(x = reorder(prediction, prediction), y = prediction)) +
+  geom_point(aes(colour = super_bowl_winner)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  theme(legend.position = "none", axis.text.x = element_blank()) + 
+  xlab("probability") 
+```
+
+This is the probability generated from the ROSE model. Blue dots represent the actual winners. The points distributed a little more and 5 out of 6 of the winners are above 50%. 3 out of 6 of the winners are above 75%.
+```{r}
+#plot for original model
+ggplot(testing, aes(x = reorder(rose_prediction, rose_prediction), y = rose_prediction)) +
+  geom_point(aes(colour = super_bowl_winner)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  theme(legend.position = "none", axis.text.x = element_blank()) + 
+  xlab("probability") 
+```
+
+## AUC
+AUC for the first model is close to flipping a coin at 65%.
+```{r}
+auc(testing$super_bowl_winner, testing$prediction)
+```
+
+The AUC for the ROSE model is a lot higher, which indicates better performance.
+```{r}
+auc(testing$super_bowl_winner, testing$rose_prediction)
+```
+
+## Confusion Matrix
+Need to add loop for finding the best sensitivity https://statinfer.com/203-4-2-calculating-sensitivity-and-specificity-in-r/
+```{r}
+threshold=0.50
+temp <- testing %>% select(super_bowl_winner)
+temp$predicted_values <- ifelse(testing$prediction>threshold,1,0)
+temp$rose_predicted_values <- ifelse(testing$rose_prediction>threshold,1,0)
+
+original_conf_matrix<-table(temp$predicted_values, temp$super_bowl_winner)
+rose_conf_matrix<-table(temp$rose_predicted_values, temp$super_bowl_winner)
+
+original_conf_matrix
+rose_conf_matrix
+```
+
+## Validation
+```{r}
+validation$prediction <- predict(original_model, newdata = validation, type = "response")
+
+#test ROSE model
+validation$rose_prediction <- predict(rose_model, newdata = validation, type = "response")
 ```
 
 ```{r}
-ggplot(testing, aes(x = reorder(Teams, prediction), y = prediction)) +
+ggplot(validation, aes(x = reorder(Teams, prediction), y = prediction)) +
   geom_point(aes(colour = Teams)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   theme(legend.position = "none") + 
@@ -108,3 +254,16 @@ ggplot(testing, aes(x = reorder(Teams, prediction), y = prediction)) +
   ylab("Predicted Winner") + 
   ggtitle("2021 Super Bowl Winner Prediction")
 ```
+
+```{r}
+ggplot(validation, aes(x = reorder(Teams, rose_prediction), y = rose_prediction)) +
+  geom_point(aes(colour = Teams)) +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
+  theme(legend.position = "none") + 
+  xlab("NFL Teams") + 
+  ylab("Predicted Winner") + 
+  ggtitle("2021 Super Bowl Winner Prediction")
+```
+
+
+
