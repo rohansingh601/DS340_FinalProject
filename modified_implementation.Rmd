@@ -42,6 +42,7 @@ season_2021 <- fread('./season_2021.csv')
 
 ## Preprocessing - superbowl winners
 0 indicates that the team did not win the SuperBowl. For teams that win, the 0 is changed to a 1.
+
 ```{r}
 #2009
 season_2009$super_bowl_winner <- 0
@@ -162,12 +163,12 @@ We trained two models. The first model was trained using our original training d
 
 The second model was trained with our ROSE training data. It has 1000 rows and 49.4% of the data represents a SuperBowl winning team.
 ```{r}
-original_model <- glm(super_bowl_winner ~ Wins + Loses + Ties + win_percent + total_points +
+original_model <- glm(super_bowl_winner ~ win_percent + total_points +
                         total_rushing_yards + total_passing_yards + total_yards, 
                       data = training, family = binomial())
 
 #Model with ROSE Training data
-rose_model <- glm(super_bowl_winner ~ Wins + Loses + Ties + win_percent + total_points +
+rose_model <- glm(super_bowl_winner ~  win_percent + total_points +
                     total_rushing_yards + total_passing_yards + total_yards, 
                   data = rose_training, family = binomial())
 ```
@@ -245,6 +246,7 @@ validation$prediction <- predict(original_model, newdata = validation, type = "r
 validation$rose_prediction <- predict(rose_model, newdata = validation, type = "response")
 ```
 
+With original model, if a team tied, then it could not win the superbowl
 ```{r}
 ggplot(validation, aes(x = reorder(Teams, prediction), y = prediction)) +
   geom_point(aes(colour = Teams)) +
@@ -264,4 +266,3 @@ ggplot(validation, aes(x = reorder(Teams, rose_prediction), y = rose_prediction)
   ylab("Predicted Winner") + 
   ggtitle("2021 Super Bowl Winner Prediction")
 ```
-
