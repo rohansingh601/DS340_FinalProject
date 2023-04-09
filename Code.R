@@ -4,6 +4,8 @@ author: "Rohan Singh"
 date: "2023-04-01"
 ---
 
+#Clean Environment
+rm(list = ls())
 # Attaching necessary libraries
 library(data.table)
 library(dplyr)
@@ -28,10 +30,16 @@ data$loser[data$loser == 1] <- NA
 
 #Seperating data into each respective season
 nfl_list <- list()
+#last day for every regular season
+end_date_dict<- c("2009" = '-01-08', "2010" = '-01-07', "2011" = '-01-06', 
+                  "2012" = '-01-04', "2013" = '-01-03', "2014" = '-01-02',
+                  "2015" = '-01-08', "2016" = '-01-06', "2017" = '-01-05', 
+                  "2018" = '-01-04', "2019" = '-01-03', "2020" = '-01-08', 
+                  "2021" = '-01-14')
 
 for (year in 2009:2021) {
   start_date <- as.Date(paste(year, "-08-01", sep = ""))
-  end_date <- as.Date(paste(year + 1, "-02-14", sep = ""))
+  end_date <- as.Date(paste(year + 1, end_date_dict[as.character(year)], sep = ""))
   nfl_list[[year]] <- data[data$date %between% c(start_date, end_date)]
 }
 
