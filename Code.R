@@ -137,6 +137,33 @@ for (n in season_2009$Teams){
 
 season_2009$total_turnovers <- mapply("+", arr1, arr2)
 
+#Adding total defensive touchdowns stopped column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2009$Teams){
+  arr1 <- append(arr1, sum(nfl_2009$def_st_td_away[which(nfl_2009$away == n)]))
+}
+
+for (n in season_2009$Teams){
+  arr2 <- append(arr2, sum(nfl_2009$def_st_td_home[which(nfl_2009$home == n)]))
+}
+
+season_2009$def_st_td <- mapply("+", arr1, arr2)
+
+#Adding total first downs column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2009$Teams){
+  arr1 <- append(arr1, sum(nfl_2009$first_downs_away[which(nfl_2009$away == n)]))
+}
+
+for (n in season_2009$Teams){
+  arr2 <- append(arr2, sum(nfl_2009$first_downs_home[which(nfl_2009$home == n)]))
+}
+
+season_2009$first_downs <- mapply("+", arr1, arr2)
 
 #######################2010##########################
 #Adding total wins and loses for each team
@@ -217,6 +244,34 @@ for (n in season_2010$Teams){
 season_2010$total_turnovers <- mapply("+", arr1, arr2)
 
 
+#Adding total defensive touchdowns stopped column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2010$Teams){
+  arr1 <- append(arr1, sum(nfl_2010$def_st_td_away[which(nfl_2010$away == n)]))
+}
+
+for (n in season_2010$Teams){
+  arr2 <- append(arr2, sum(nfl_2010$def_st_td_home[which(nfl_2010$home == n)]))
+}
+
+season_2010$def_st_td <- mapply("+", arr1, arr2)
+
+#Adding total first downs column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2010$Teams){
+  arr1 <- append(arr1, sum(nfl_2010$first_downs_away[which(nfl_2010$away == n)]))
+}
+
+for (n in season_2010$Teams){
+  arr2 <- append(arr2, sum(nfl_2010$first_downs_home[which(nfl_2010$home == n)]))
+}
+
+season_2010$first_downs <- mapply("+", arr1, arr2)
+
 #######################2011##########################
 #Adding total wins and loses for each team
 wins <- as.data.table(table(nfl_2011$winner))
@@ -294,6 +349,35 @@ for (n in season_2011$Teams){
 }
 
 season_2011$total_turnovers <- mapply("+", arr1, arr2)
+
+
+#Adding total defensive touchdowns stopped column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2011$Teams){
+  arr1 <- append(arr1, sum(nfl_2011$def_st_td_away[which(nfl_2011$away == n)]))
+}
+
+for (n in season_2011$Teams){
+  arr2 <- append(arr2, sum(nfl_2011$def_st_td_home[which(nfl_2011$home == n)]))
+}
+
+season_2011$def_st_td <- mapply("+", arr1, arr2)
+
+#Adding total first downs column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2011$Teams){
+  arr1 <- append(arr1, sum(nfl_2011$first_downs_away[which(nfl_2011$away == n)]))
+}
+
+for (n in season_2011$Teams){
+  arr2 <- append(arr2, sum(nfl_2011$first_downs_home[which(nfl_2011$home == n)]))
+}
+
+season_2011$first_downs <- mapply("+", arr1, arr2)
 
 #######################2012##########################
 #Adding total wins and loses for each team
@@ -373,6 +457,37 @@ for (n in season_2012$Teams){
 
 season_2012$total_turnovers <- mapply("+", arr1, arr2)
 
+
+
+#Adding total defensive touchdowns stopped column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2012$Teams){
+  arr1 <- append(arr1, sum(nfl_2012$def_st_td_away[which(nfl_2012$away == n)]))
+}
+
+for (n in season_2012$Teams){
+  arr2 <- append(arr2, sum(nfl_2012$def_st_td_home[which(nfl_2012$home == n)]))
+}
+
+season_2012$def_st_td <- mapply("+", arr1, arr2)
+
+#Adding total first downs column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2012$Teams){
+  arr1 <- append(arr1, sum(nfl_2012$first_downs_away[which(nfl_2012$away == n)]))
+}
+
+for (n in season_2012$Teams){
+  arr2 <- append(arr2, sum(nfl_2012$first_downs_home[which(nfl_2012$home == n)]))
+}
+
+season_2012$first_downs <- mapply("+", arr1, arr2)
+
+
 #######################2013##########################
 #Adding total wins and loses for each team
 wins <- as.data.table(table(nfl_2013$winner))
@@ -450,6 +565,37 @@ for (n in season_2013$Teams){
 }
 
 season_2013$total_turnovers <- mapply("+", arr1, arr2)
+
+
+
+#Adding total defensive touchdowns stopped column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2013$Teams){
+  arr1 <- append(arr1, sum(nfl_2013$def_st_td_away[which(nfl_2013$away == n)]))
+}
+
+for (n in season_2013$Teams){
+  arr2 <- append(arr2, sum(nfl_2013$def_st_td_home[which(nfl_2013$home == n)]))
+}
+
+season_2013$def_st_td <- mapply("+", arr1, arr2)
+
+#Adding total first downs column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2013$Teams){
+  arr1 <- append(arr1, sum(nfl_2013$first_downs_away[which(nfl_2013$away == n)]))
+}
+
+for (n in season_2013$Teams){
+  arr2 <- append(arr2, sum(nfl_2013$first_downs_home[which(nfl_2013$home == n)]))
+}
+
+season_2013$first_downs <- mapply("+", arr1, arr2)
+
 
 #######################2014##########################
 #Adding total wins and loses for each team
@@ -529,6 +675,37 @@ for (n in season_2014$Teams){
 
 season_2014$total_turnovers <- mapply("+", arr1, arr2)
 
+
+
+#Adding total defensive touchdowns stopped column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2014$Teams){
+  arr1 <- append(arr1, sum(nfl_2014$def_st_td_away[which(nfl_2014$away == n)]))
+}
+
+for (n in season_2014$Teams){
+  arr2 <- append(arr2, sum(nfl_2014$def_st_td_home[which(nfl_2014$home == n)]))
+}
+
+season_2014$def_st_td <- mapply("+", arr1, arr2)
+
+#Adding total first downs column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2014$Teams){
+  arr1 <- append(arr1, sum(nfl_2014$first_downs_away[which(nfl_2014$away == n)]))
+}
+
+for (n in season_2014$Teams){
+  arr2 <- append(arr2, sum(nfl_2014$first_downs_home[which(nfl_2014$home == n)]))
+}
+
+season_2014$first_downs <- mapply("+", arr1, arr2)
+
+
 #######################2015##########################
 #Adding total wins and loses for each team
 wins <- as.data.table(table(nfl_2015$winner))
@@ -607,6 +784,36 @@ for (n in season_2015$Teams){
 
 season_2015$total_turnovers <- mapply("+", arr1, arr2)
 
+
+
+#Adding total defensive touchdowns stopped column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2015$Teams){
+  arr1 <- append(arr1, sum(nfl_2015$def_st_td_away[which(nfl_2015$away == n)]))
+}
+
+for (n in season_2015$Teams){
+  arr2 <- append(arr2, sum(nfl_2015$def_st_td_home[which(nfl_2015$home == n)]))
+}
+
+season_2015$def_st_td <- mapply("+", arr1, arr2)
+
+#Adding total first downs column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2015$Teams){
+  arr1 <- append(arr1, sum(nfl_2015$first_downs_away[which(nfl_2015$away == n)]))
+}
+
+for (n in season_2015$Teams){
+  arr2 <- append(arr2, sum(nfl_2015$first_downs_home[which(nfl_2015$home == n)]))
+}
+
+season_2015$first_downs <- mapply("+", arr1, arr2)
+
 #######################2016##########################
 #Adding total wins and loses for each team
 wins <- as.data.table(table(nfl_2016$winner))
@@ -684,6 +891,37 @@ for (n in season_2016$Teams){
 }
 
 season_2016$total_turnovers <- mapply("+", arr1, arr2)
+
+
+
+#Adding total defensive touchdowns stopped column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2016$Teams){
+  arr1 <- append(arr1, sum(nfl_2016$def_st_td_away[which(nfl_2016$away == n)]))
+}
+
+for (n in season_2016$Teams){
+  arr2 <- append(arr2, sum(nfl_2016$def_st_td_home[which(nfl_2016$home == n)]))
+}
+
+season_2016$def_st_td <- mapply("+", arr1, arr2)
+
+#Adding total first downs column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2016$Teams){
+  arr1 <- append(arr1, sum(nfl_2016$first_downs_away[which(nfl_2016$away == n)]))
+}
+
+for (n in season_2016$Teams){
+  arr2 <- append(arr2, sum(nfl_2016$first_downs_home[which(nfl_2016$home == n)]))
+}
+
+season_2016$first_downs <- mapply("+", arr1, arr2)
+
 
 #######################2017##########################
 #Adding total wins and loses for each team
@@ -765,6 +1003,35 @@ season_2017$total_turnovers <- mapply("+", arr1, arr2)
 
 
 
+#Adding total defensive touchdowns stopped column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2017$Teams){
+  arr1 <- append(arr1, sum(nfl_2017$def_st_td_away[which(nfl_2017$away == n)]))
+}
+
+for (n in season_2017$Teams){
+  arr2 <- append(arr2, sum(nfl_2017$def_st_td_home[which(nfl_2017$home == n)]))
+}
+
+season_2017$def_st_td <- mapply("+", arr1, arr2)
+
+#Adding total first downs column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2017$Teams){
+  arr1 <- append(arr1, sum(nfl_2017$first_downs_away[which(nfl_2017$away == n)]))
+}
+
+for (n in season_2017$Teams){
+  arr2 <- append(arr2, sum(nfl_2017$first_downs_home[which(nfl_2017$home == n)]))
+}
+
+season_2017$first_downs <- mapply("+", arr1, arr2)
+
+
 #######################2018##########################
 #Adding total wins and loses for each team
 wins <- as.data.table(table(nfl_2018$winner))
@@ -843,6 +1110,37 @@ for (n in season_2018$Teams){
 
 season_2018$total_turnovers <- mapply("+", arr1, arr2)
 
+
+
+#Adding total defensive touchdowns stopped column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2018$Teams){
+  arr1 <- append(arr1, sum(nfl_2018$def_st_td_away[which(nfl_2018$away == n)]))
+}
+
+for (n in season_2018$Teams){
+  arr2 <- append(arr2, sum(nfl_2018$def_st_td_home[which(nfl_2018$home == n)]))
+}
+
+season_2018$def_st_td <- mapply("+", arr1, arr2)
+
+#Adding total first downs column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2018$Teams){
+  arr1 <- append(arr1, sum(nfl_2018$first_downs_away[which(nfl_2018$away == n)]))
+}
+
+for (n in season_2018$Teams){
+  arr2 <- append(arr2, sum(nfl_2018$first_downs_home[which(nfl_2018$home == n)]))
+}
+
+season_2018$first_downs <- mapply("+", arr1, arr2)
+
+
 ######################2019##########################
 #Adding total wins and loses for each team
 wins <- as.data.table(table(nfl_2019$winner))
@@ -920,6 +1218,37 @@ for (n in season_2019$Teams){
 }
 
 season_2019$total_turnovers <- mapply("+", arr1, arr2)
+
+
+
+#Adding total defensive touchdowns stopped column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2019$Teams){
+  arr1 <- append(arr1, sum(nfl_2019$def_st_td_away[which(nfl_2019$away == n)]))
+}
+
+for (n in season_2019$Teams){
+  arr2 <- append(arr2, sum(nfl_2019$def_st_td_home[which(nfl_2019$home == n)]))
+}
+
+season_2019$def_st_td <- mapply("+", arr1, arr2)
+
+#Adding total first downs column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2019$Teams){
+  arr1 <- append(arr1, sum(nfl_2019$first_downs_away[which(nfl_2019$away == n)]))
+}
+
+for (n in season_2019$Teams){
+  arr2 <- append(arr2, sum(nfl_2019$first_downs_home[which(nfl_2019$home == n)]))
+}
+
+season_2019$first_downs <- mapply("+", arr1, arr2)
+
 ######################2020##########################
 #Adding total wins and loses for each team
 wins <- as.data.table(table(nfl_2020$winner))
@@ -998,6 +1327,36 @@ for (n in season_2020$Teams){
 
 season_2020$total_turnovers <- mapply("+", arr1, arr2)
 
+
+
+#Adding total defensive touchdowns stopped column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2020$Teams){
+  arr1 <- append(arr1, sum(nfl_2020$def_st_td_away[which(nfl_2020$away == n)]))
+}
+
+for (n in season_2020$Teams){
+  arr2 <- append(arr2, sum(nfl_2020$def_st_td_home[which(nfl_2020$home == n)]))
+}
+
+season_2020$def_st_td <- mapply("+", arr1, arr2)
+
+#Adding total first downs column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2020$Teams){
+  arr1 <- append(arr1, sum(nfl_2020$first_downs_away[which(nfl_2020$away == n)]))
+}
+
+for (n in season_2020$Teams){
+  arr2 <- append(arr2, sum(nfl_2020$first_downs_home[which(nfl_2020$home == n)]))
+}
+
+season_2020$first_downs <- mapply("+", arr1, arr2)
+
 ######################2021##########################
 #Adding total wins and loses for each team
 wins <- as.data.table(table(nfl_2021$winner))
@@ -1075,6 +1434,37 @@ for (n in season_2021$Teams){
 }
 
 season_2021$total_turnovers <- mapply("+", arr1, arr2)
+
+
+
+#Adding total defensive touchdowns stopped column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2021$Teams){
+  arr1 <- append(arr1, sum(nfl_2021$def_st_td_away[which(nfl_2021$away == n)]))
+}
+
+for (n in season_2021$Teams){
+  arr2 <- append(arr2, sum(nfl_2021$def_st_td_home[which(nfl_2021$home == n)]))
+}
+
+season_2021$def_st_td <- mapply("+", arr1, arr2)
+
+#Adding total first downs column 
+arr1 <- c()
+arr2 <- c()
+
+for (n in season_2021$Teams){
+  arr1 <- append(arr1, sum(nfl_2021$first_downs_away[which(nfl_2021$away == n)]))
+}
+
+for (n in season_2021$Teams){
+  arr2 <- append(arr2, sum(nfl_2021$first_downs_home[which(nfl_2021$home == n)]))
+}
+
+season_2021$first_downs <- mapply("+", arr1, arr2)
+
 
 #####################################
 fwrite(season_2009, "season_2009.csv")

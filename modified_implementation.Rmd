@@ -164,12 +164,14 @@ We trained two models. The first model was trained using our original training d
 The second model was trained with our ROSE training data. It has 1000 rows and 49.4% of the data represents a SuperBowl winning team.
 ```{r}
 original_model <- glm(super_bowl_winner ~ win_percent + total_points +
-                        total_rushing_yards + total_passing_yards + total_yards, 
+                        total_rushing_yards + total_passing_yards + total_yards +
+                        total_turnovers + def_st_td + first_downs, 
                       data = training, family = binomial())
 
 #Model with ROSE Training data
 rose_model <- glm(super_bowl_winner ~  win_percent + total_points +
-                    total_rushing_yards + total_passing_yards + total_yards, 
+                    total_rushing_yards + total_passing_yards + total_yards +
+                        total_turnovers + def_st_td + first_downs, 
                   data = rose_training, family = binomial())
 ```
 
@@ -224,7 +226,6 @@ auc(testing$super_bowl_winner, testing$rose_prediction)
 ```
 
 ## Confusion Matrix
-Need to add loop for finding the best sensitivity https://statinfer.com/203-4-2-calculating-sensitivity-and-specificity-in-r/
 ```{r}
 threshold=0.50
 temp <- testing %>% select(super_bowl_winner)
@@ -233,10 +234,24 @@ temp$rose_predicted_values <- ifelse(testing$rose_prediction>threshold,1,0)
 
 original_conf_matrix<-table(temp$predicted_values, temp$super_bowl_winner)
 rose_conf_matrix<-table(temp$rose_predicted_values, temp$super_bowl_winner)
-
-original_conf_matrix
-rose_conf_matrix
 ```
+Original
+```{r}
+original_conf_matrix
+
+#sensitivity
+sensitivity(original_conf_matrix)
+```
+
+
+ROSE Matrix
+```{r}
+rose_conf_matrix
+
+#sensitivity
+sensitivity(rose_conf_matrix)
+```
+
 
 ## Validation
 ```{r}
