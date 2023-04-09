@@ -31,7 +31,7 @@ nfl_list <- list()
 
 for (year in 2009:2021) {
   start_date <- as.Date(paste(year, "-08-01", sep = ""))
-  end_date <- as.Date(paste(year + 1, "-02-14", sep = ""))
+  end_date <- as.Date(paste(year + 1, "-01-02", sep = ""))
   nfl_list[[year]] <- data[data$date %between% c(start_date, end_date)]
 }
 
