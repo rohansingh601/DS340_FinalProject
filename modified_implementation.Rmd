@@ -265,5 +265,3 @@ ggplot(validation, aes(x = reorder(Teams, rose_prediction), y = rose_prediction)
   ggtitle("2021 Super Bowl Winner Prediction")
 ```
 
-
-
