@@ -162,17 +162,29 @@ table(rose_training$super_bowl_winner == 1)
 We trained two models. The first model was trained using our original training data. It has 192 rows and 3.125% of the data represents a SuperBowl winning team.
 
 The second model was trained with our ROSE training data. It has 1000 rows and 49.4% of the data represents a SuperBowl winning team.
-```{r}
-original_model <- glm(super_bowl_winner ~ win_percent + total_points +
-                        total_rushing_yards + total_passing_yards + total_yards +
-                        total_turnovers + def_st_td + first_downs, 
-                      data = training, family = binomial())
 
-#Model with ROSE Training data
-rose_model <- glm(super_bowl_winner ~  win_percent + total_points +
+### Backwards Selection - ROSE model
+```{r}
+int_only_model <- glm(super_bowl_winner ~ 1, 
+                      family = binomial,
+                      data = rose_training)
+
+full_model <- glm(super_bowl_winner ~  win_percent + total_points +
                     total_rushing_yards + total_passing_yards + total_yards +
                         total_turnovers + def_st_td + first_downs, 
                   data = rose_training, family = binomial())
+
+rose_model <- stats::step(object = full_model, 
+            scope = list(lower = int_only_model, upper = full_model),
+            data = rose_training,
+            direction = "backward")
+```
+
+
+```{r}
+original_model <- glm(super_bowl_winner ~ win_percent + total_points + total_passing_yards + 
+    total_turnovers + def_st_td, 
+                      data = training, family = binomial())
 ```
 
 
