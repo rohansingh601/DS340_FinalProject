@@ -235,12 +235,15 @@ temp$rose_predicted_values <- ifelse(testing$rose_prediction>threshold,1,0)
 original_conf_matrix<-table(temp$predicted_values, temp$super_bowl_winner)
 rose_conf_matrix<-table(temp$rose_predicted_values, temp$super_bowl_winner)
 ```
+
+
 Original
+Does not pick a winning team since everything is bellow 30% probability
 ```{r}
 original_conf_matrix
 
 #sensitivity
-sensitivity(original_conf_matrix)
+#sensitivity(original_conf_matrix)
 ```
 
 
