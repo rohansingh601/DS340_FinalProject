@@ -147,7 +147,7 @@ The original training dataset was 192 row. With ROSE, we are able to add synthet
 n_train <- 1000
 
 #probability of minority class being generated
-p_minority <- 0.5 #not bad performance for .25
+p_minority <- 0.5 
 
 rose_training <- ROSE(as.factor(super_bowl_winner) ~ ., data  = training, N = n_train, p = p_minority, seed = 412)$data
 ```
@@ -211,9 +211,12 @@ This is the probability generated from the first model. Blue dots represent the 
 #plot for original model
 ggplot(testing, aes(x = reorder(prediction, prediction), y = prediction)) +
   geom_point(aes(colour = super_bowl_winner)) +
+  ylim(0, 1) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   theme(legend.position = "none", axis.text.x = element_blank()) + 
-  xlab("probability") 
+  xlab("Probability") +
+  ylab("Probability")  + 
+  ggtitle("Testing: Original GLM PREDICTION")
 ```
 
 This is the probability generated from the ROSE model. Blue dots represent the actual winners. The points distributed a little more and 5 out of 6 of the winners are above 50%. 3 out of 6 of the winners are above 75%.
@@ -221,18 +224,21 @@ This is the probability generated from the ROSE model. Blue dots represent the a
 #plot for original model
 ggplot(testing, aes(x = reorder(rose_prediction, rose_prediction), y = rose_prediction)) +
   geom_point(aes(colour = super_bowl_winner)) +
+  ylim(0, 1) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   theme(legend.position = "none", axis.text.x = element_blank()) + 
-  xlab("probability") 
+  xlab("ROSE Probability")  + 
+  ylab("ROSE Probability")  + 
+  ggtitle("Testing: ROSE GLM PREDICTION")
 ```
 
 ## AUC
-AUC for the first model is close to flipping a coin at 65%.
+Original
 ```{r}
 auc(testing$super_bowl_winner, testing$prediction)
 ```
 
-The AUC for the ROSE model is a lot higher, which indicates better performance.
+ROSE
 ```{r}
 auc(testing$super_bowl_winner, testing$rose_prediction)
 ```
@@ -279,9 +285,10 @@ validation$rose_prediction <- predict(rose_model, newdata = validation, type = "
 With original model, if a team tied, then it could not win the superbowl
 ```{r}
 ggplot(validation, aes(x = reorder(Teams, prediction), y = prediction)) +
-  geom_point(aes(colour = Teams)) +
+  geom_point(aes(colour = super_bowl_winner, size = 1)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   theme(legend.position = "none") + 
+  ylim(0, 1) +
   xlab("NFL Teams") + 
   ylab("Predicted Winner") + 
   ggtitle("2021 Super Bowl Winner Prediction")
@@ -289,9 +296,10 @@ ggplot(validation, aes(x = reorder(Teams, prediction), y = prediction)) +
 
 ```{r}
 ggplot(validation, aes(x = reorder(Teams, rose_prediction), y = rose_prediction)) +
-  geom_point(aes(colour = Teams)) +
+  geom_point(aes(colour = super_bowl_winner, size = 1)) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5)) +
   theme(legend.position = "none") + 
+  ylim(0, 1) +
   xlab("NFL Teams") + 
   ylab("Predicted Winner") + 
   ggtitle("2021 Super Bowl Winner Prediction")
